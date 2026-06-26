@@ -26,13 +26,62 @@
 
 ## 快速开始
 
+### 安装
+
 ```bash
-pip install openai
+pip install -e .
+```
 
+### 配置 API Key
+
+```bash
 export OPENAI_API_KEY="sk-..."
-export OPENAI_BASE_URL="https://api.openai.com/v1"  # 可选
+export OPENAI_BASE_URL="https://api.openai.com/v1"  # 可选，用于自定义端点 / 本地模型
+```
 
-python -m autoloop.run --goal "修复 calculator.py 的 bug" --work-dir ./my_project --test-cmd "pytest tests/ -v"
+### 运行示例（修复有 Bug 的计算器项目）
+
+仓库自带一个 5 个 bug 的示例项目（`examples/buggy_project/`），可直接跑：
+
+```bash
+python -m autoloop.run \
+    --goal "修复 calculator.py 的所有 bug，让 tests/test_calculator.py 中的所有测试用例通过" \
+    --work-dir ./examples/buggy_project \
+    --test-cmd "pytest tests/test_calculator.py -v"
+```
+
+### 运行自己的项目
+
+```bash
+python -m autoloop.run \
+    --goal "修复 main.py 中的解析错误" \
+    --work-dir /path/to/your/project \
+    --test-cmd "pytest tests/ -v" \
+    --model gpt-4o-mini \
+    --max-rounds 15
+```
+
+### 编程方式调用
+
+```python
+from autoloop import LoopEngine, LoopConfig, TaskDefinition
+
+config = LoopConfig(
+    max_rounds=10,
+    execution_model="gpt-4o-mini",
+    verification_model="gpt-4o",
+    work_dir="./workspace",
+)
+engine = LoopEngine(config=config)
+engine.setup_llm()
+
+result = engine.run(TaskDefinition(
+    task_id="my-task",
+    goal="修复所有测试失败",
+    work_dir="/path/to/project",
+    test_command="pytest tests/ -v",
+))
+print(result.status, result.current_round, result.total_tokens)
 ```
 
 ## 配置
