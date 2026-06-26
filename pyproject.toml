@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "autoloop"
+version = "0.1.0"
+description = "AI 自主循环执行引擎 — 单任务本地运行的 Loop MVP"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.0.0,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0,<9",
+]
+
+[project.scripts]
+autoloop = "autoloop.run:main"
